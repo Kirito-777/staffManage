@@ -121,15 +121,19 @@
     from dept
     where did = #{did,jdbcType=INTEGER}
   </select>
-  <select id="selectByDname" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectByDname" parameterType="com.staff.bean.Dept" resultMap="BaseResultMap">
     select 
-    <include refid="Base_Column_List" />
+    *
     from dept
-    where dname = #{dname,jdbcType=VARCHAR}
+    where 
+      dname like CONCAT(CONCAT('%', #{dname,jdbcType=VARCHAR}), '%')
+      or manage like CONCAT(CONCAT('%', #{dname,jdbcType=VARCHAR}), '%')
+      or did like CONCAT(CONCAT('%', #{dname,jdbcType=VARCHAR}+0), '%')
+    
   </select>
   <delete id="deleteByPrimaryKey" parameterType="com.staff.bean.Dept">
-    delete dept,t_emp from dept,t_emp
-    where dept.did = t_emp.did and dept.did = #{did,jdbcType=INTEGER}
+    delete dept from dept
+    where  dept.did = #{did,jdbcType=INTEGER}
   </delete>
   <delete id="deleteByExample" parameterType="com.staff.bean.DeptExample">
     delete from dept

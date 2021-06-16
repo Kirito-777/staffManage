@@ -22,10 +22,10 @@ public class DeptService {
 	}
 	
 	// 查询岗位
-	public Dept getDept(String name) {
+	public List<Dept> getDept(Dept dept) {
 		// TODO Auto-generated method stub
-		Dept dept = deptMapper.selectByDname(name);
-		return dept;
+		List<Dept> dept1 = deptMapper.selectByDname(dept);
+		return dept1;
 	}
 	
 	// 修改岗位

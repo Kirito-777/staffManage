@@ -27,7 +27,7 @@ public interface DeptMapper {
 
     Dept selectByPrimaryKey(Integer did);
     
-    Dept selectByDname(String dname);
+    List<Dept> selectByDname(Dept record);
 
     int updateByExampleSelective(@Param("record") Dept record, @Param("example") DeptExample example);
 

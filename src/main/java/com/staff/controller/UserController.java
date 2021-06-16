@@ -36,7 +36,7 @@ public class UserController {
 			@RequestParam(value="id")String id) {
 
 		// 引入PageHelper插件并调用，传入页码及每页的行数
-		PageHelper.startPage(page, 8);
+		PageHelper.startPage(page, 7);
 //		System.out.println(id);
 		List<User> users = userMapper.selectByExample(id);
 
@@ -213,13 +213,13 @@ public class UserController {
 		
 	@RequestMapping("/getuser")
 	@ResponseBody
-	public Msg getUser(@RequestBody User user) {
-
-		System.out.println(user.getUsername());
+	public Msg getUser(@RequestParam(value = "page", defaultValue = "1") Integer page,@RequestParam(value = "username")String username) {
+		PageHelper.startPage(page, 7);
+		System.out.println(username);
 		// 根据 *用户名* 查询数据库中的该名用户信息，存入userExited
-		User userExited = userMapper.selectByUsername(user.getUsername());
-		System.out.println(userExited.toString());
-		return Msg.success().add("user", userExited);
+		List<User> user = userMapper.selectByExample1(username);
+		PageInfo pageInfo = new PageInfo(user, 10);
+		return Msg.success().add("pageInfo", pageInfo);
 	}
 
 }

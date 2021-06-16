@@ -45,5 +45,6 @@
 		<table tableName="t_user" domainObjectName="User"></table>
 		<table tableName="dept" domainObjectName="Dept"></table>
 		<table tableName="notice" domainObjectName="Notice"></table>
+		<table tableName="file" domainObjectName="File"></table>
 	</context>
 </generatorConfiguration>

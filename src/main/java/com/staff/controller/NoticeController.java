@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.staff.bean.Dept;
 import com.staff.bean.Msg;
 import com.staff.bean.Notice;
@@ -28,20 +30,24 @@ public class NoticeController {
 	@Autowired
 	NoticeMapper noticeMapper;
 	
-	//获取全部公告
+	//分页获取全部公告
 	@RequestMapping("/getnotices")
 	@ResponseBody
-	public List<Notice> getDept() {
-//		PageHelper.startPage(1, 5);
+	public Msg getDept(@RequestParam(value = "page", defaultValue = "1") Integer page) {
+		System.out.println("读取公告信息");
+		PageHelper.startPage(page, 7);
 		List<Notice> notice = noticeService.getNoticeAll();
 		// 使用PageInfo包装查询后的结果，连续显示的页数为5
-//		PageInfo pageInfo = new PageInfo(dept, 1);
-//		return Msg.success().add("pageInfo", pageInfo);
-		System.out.println("读取公告信息");
-//		System.out.println(notice.containsAll(notice));
-		return notice;
+		PageInfo pageInfo = new PageInfo(notice, 5);
+		return Msg.success().add("pageInfo", pageInfo);
 	}
 	
+	@RequestMapping("/getnoticesAll")
+	@ResponseBody
+	public List<Notice> getAll(){
+		List<Notice> notice = noticeService.getNoticeAll();
+		return notice;
+	}
 	//修改公告
 	@RequestMapping("/updatenotice")
 	@ResponseBody
@@ -78,9 +84,10 @@ public class NoticeController {
 	@RequestMapping("/searchnotice")
 	@ResponseBody
 	@CrossOrigin
-	public List<Notice> searchnotice(@RequestBody Notice notice) {
+	public Msg searchnotice(@RequestParam(value = "page", defaultValue = "1") Integer page,@RequestBody Notice notice) {
 		System.out.println("查找公告");
 		System.out.println(notice.toString());
+		PageHelper.startPage(page, 7);
 		if(notice.getUsername() == "") {
 			notice.setUsername(null);;
 		}
@@ -95,10 +102,14 @@ public class NoticeController {
 		}
 		if(notice == null) {
 			List<Notice> notice1 = noticeService.getNoticeAll();
-			return notice1;
+			PageInfo pageInfo = new PageInfo(notice1, 5);
+			return Msg.success().add("pageInfo", pageInfo);
+//			return notice1;
 		}else {
 			List<Notice> notice1=noticeMapper.selectByExampleWithNotice(notice);
-			return notice1;
+			PageInfo pageInfo = new PageInfo(notice1, 5);
+			return Msg.success().add("pageInfo", pageInfo);
+//			return notice1;
 		}
 		
 	}	

@@ -1,5 +1,6 @@
 package com.staff.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -19,13 +20,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.staff.bean.Dept;
 import com.staff.bean.Employee;
 import com.staff.bean.Msg;
+import com.staff.bean.Notice;
 import com.staff.dao.EmployeeMapper;
+import com.staff.dao.FileMapper;
+import com.staff.service.DeptService;
 
 @Controller
 @CrossOrigin(origins = "*")
@@ -36,6 +43,12 @@ public class FileController {
 	
 	@Autowired
 	EmployeeMapper employeeMapper;
+	
+	@Autowired
+	FileMapper fileMapper;
+	
+	@Autowired
+	DeptService deptService;
 	
 	@PutMapping("/readfile")
 	@ResponseBody
@@ -86,17 +99,28 @@ public class FileController {
 				System.out.println(e);
 				return Msg.fail().add("msg", "在导入用户"+list.get(0)+"时失败，请验证文件内容是否有误");
 			}
-			switch (list.get(list.size()-1)) {
-			case "研发部":
-				emp.setDid(1);
-				break;
-			case "测试部":
-				emp.setDid(2);
-				break;
-			case "运营部":
-				emp.setDid(3);
-				break;
-			default:
+//			switch (list.get(list.size()-1)) {
+//			case "研发部":
+//				emp.setDid(1);
+//				break;
+//			case "测试部":
+//				emp.setDid(2);
+//				break;
+//			case "运营部":
+//				emp.setDid(3);
+//				break;
+//			default:
+//				return Msg.fail().add("msg", "在导入用户"+list.get(0)+"时失败，请验证文件内容是否有误");
+//			}
+			List<Dept> dept = deptService.getDeptAll();
+			System.out.println(list.get(list.size()-1));
+			for (int i = 0; i < dept.size(); i++) {
+//				System.out.println(dept.get(i).getDname());
+				if(list.get(list.size()-1).equals(dept.get(i).getDname())) {
+					emp.setDid(dept.get(i).getDid());
+				}
+			}
+			if(emp.getDid() == null) {
 				return Msg.fail().add("msg", "在导入用户"+list.get(0)+"时失败，请验证文件内容是否有误");
 			}
 			System.out.println(emp);
@@ -115,5 +139,5 @@ public class FileController {
 		workbook.close();
 		return Msg.success().add("name", nameList);
 	}
-	
+		
 }
